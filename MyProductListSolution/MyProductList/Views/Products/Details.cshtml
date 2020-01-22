@@ -1,0 +1,67 @@
+﻿@model MyProductList.ViewModels.ProductsViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Product.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Description)
+        </dt>
+
+        <dd class="product">
+            @Html.DisplayFor(model => model.Product.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Product.Price)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description_Eng)
+        </dt>
+
+        <dd id="eng_desc"></dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Product.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+@section scripts{
+<script type="text/javascript">
+    $("document").ready(function () {
+        var description = $(".product").text();
+            description = $.trim(description);
+            console.log(description);
+            $.ajax({
+                type: 'GET',
+                url: '/api/translator/TranslateMe?word=' + description,
+                dataType: 'json',
+                success: function (data) {
+                    var text = JSON.parse(data.Text)[0];
+                    var number = data.Number;
+                    $("#eng_desc").text(text + "-" + number);
+                }
+            });
+        });
+</script>
+    }

@@ -1,0 +1,80 @@
+﻿@model MyProductList.ViewModels.ProductsViewModel
+
+@{
+    /**/
+
+    ViewBag.Title = "Index";
+}
+
+<h2 class="text-center">All Products</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create", "Products", null, new { @class = "btn btn-success float-right mb-3" })
+</p>
+<div class="table-responsive">
+    <table class="table table-primary">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description_Eng)
+            </th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model.Products)
+        {
+            <tr class="products">
+                <td>
+                    @item.Name
+                </td>
+                <td class="product">
+                    @item.Description
+                </td>
+                <td>
+                    @item.Price
+                </td>
+                <td></td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+    </table>
+
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $("document").ready(function () {
+
+            var rows = $('.table .products');
+            $.each(rows, function () {
+
+                var description = $(this).find(".product").text();
+                description = $.trim(description);
+                //console.log(description);
+                var current_row = $(this);
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/translator/TranslateMe?word=' + description,
+                    dataType: 'json',
+                    success: function(data){
+                        var text = JSON.parse(data.Text)[0];
+                        var number = data.Number;
+                        current_row.closest('tr').children('td').eq(3).html(text + " - " + number);
+                    }
+                });
+            });
+        });
+    </script>
+}
